@@ -5,3 +5,8 @@ In order to create the topology we first added the namespaces using the command 
 ```bash
 ip netns add <NAMESPACE-NAME>
 ```
+
+Then we should add two bridges using the following commad:
+```
+ip link add <Bridge-Name> type bridge
+```
