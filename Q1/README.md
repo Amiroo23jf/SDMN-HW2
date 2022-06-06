@@ -28,3 +28,8 @@ Next, the ip addresses of each interface should be added and set to up:
 ip -n <Namespace-Name> addr add <ip-address> dev <Interface-Name>
 ip -n <Namespace-Name> link set <Interface-Name> up
 ```
+
+Finally the default gateways of the nodes should be set to the router:
+```
+ip netns exec <Namespace-Name> route add default via <Gateway>
+```
