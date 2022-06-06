@@ -1,5 +1,11 @@
 This directory contains the scripts needed for Question 1.
 
+**Note:** In my Virtual Machine, the parameters `net.bridge.bridge-nf-call-iptables`, `net.bridge.bridge.bridge-nf-call-ip6tables` and `net.bridge.bridge-nf-call-arptables` were set to 1 by default. In order to let iptables handle bridged packets and route the traffic automatically this parameters should be set to 1 using the following code (You might not face any issue if these parameters were set to 0 by default in your OS, if so ignore this part):
+```
+echo "0" > /proc/sys/net/bridge/bridge-nf-call-iptables
+echo "0" > /proc/sys/net/bridge/bridge-nf-call-ip6tables
+echo "0" > /proc/sys/net/bridge/bridge-nf-call-arptables
+```
 ## Creating the topology
 In order to create the topology the namespaces should be added using the command below:
 ```
