@@ -15,7 +15,7 @@ ip netns add <Namespace-Name>
 Then two bridges should be addded and set to up using the following commands:
 ```
 ip link add <Bridge-Name> type bridge
-ip link set dev <Bridge-Name> up
+ip link set <Bridge-Name> up
 ```
 
 Afterwards, the virtual interfaces of the namespaces should be created using the following command:
@@ -32,10 +32,20 @@ ip link set <Peer-Name> master <Bridge-Name>
 Next, the ip addresses of each interface should be added and set to up:
 ```
 ip -n <Namespace-Name> addr add <ip-address> dev <Interface-Name>
-ip -n <Namespace-Name> link set <Interface-Name> up
+ip -n <Namespace-Name> link set dev <Interface-Name> up
 ```
 
 Finally the default gateways of the nodes should be set to the router:
 ```
 ip netns exec <Namespace-Name> route add default via <Gateway>
 ```
+
+**Note:** An extra script called "del_topo.sh" is also created that reverses all the changes that "create_topo.sh" makes including the namespaces and bridges.
+
+## ping_nodes.sh script
+This script simply finds the ip from the name of the given node and then, it runs the following command:
+```
+ip netns exec <First-Namespace-Name> ping <Second-Namespace-IP>
+```
+
+
