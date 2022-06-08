@@ -5,13 +5,13 @@ This script creates an HTTP server which responds to GET requests with status co
 ```
 { "status" : "<Current Status>"}
 ```
-where the parameter <Current Status> can be changed using POST requests.
+where the parameter `Current Status` can be changed using POST requests.
 
 In order to change the status, a POST request with the given format should be sent to the server:
 ```
 { "status" : "<Current Status>"}
 ```
-By sending this request to the server, the servers responds with status code 201 and changes the <Current Status> to the given value.
+By sending this request to the server, the servers responds with status code 201 and changes the `Current Status` to the given value.
 
 **Extra:**
 I have implemented the functionality that the server responds to unexpected POST requests with status code 500 and and html message "Unsupported Requested"
