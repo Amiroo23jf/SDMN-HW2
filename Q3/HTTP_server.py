@@ -3,7 +3,7 @@ import json
 import cgi
 
 PORT = 8000
-HOST_NAME = "localhost"
+HOST_NAME = "0.0.0.0"
 
 class PythonServer(BaseHTTPRequestHandler):
     """Python HTTP Server that handles GET and POST request"""
