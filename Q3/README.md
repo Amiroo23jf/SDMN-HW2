@@ -23,3 +23,6 @@ The script acts as an example client that send the requests given below in order
 3. GET -> status code 200, message { "status" : "OK" }
 4. POST { "status" : "not OK" } -> status code 201, message { "status" : "OK" }
 5. GET -> status code 200, message { "status" : "not OK" }
+
+## Dockerfile
+The dockerfile is built on top of the image python:3.6.9 and it simply adds the HTTP_server.py to a directory named "code" and then runs it using python.
