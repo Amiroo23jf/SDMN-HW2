@@ -18,7 +18,7 @@ def CLI():
                 print("Creating the containers directory failed...")
                 return
             print("Containers directory is created.")
-        elif (os.path.isdir("./namespaces") == False):
+        if (os.path.isdir("./namespaces") == False):
             # The namespace directory stores the namespaces of the created containers
             print("Creating the namespaces directory...")
             try:
@@ -27,12 +27,14 @@ def CLI():
                 print("Creating the namespace directory failed...")
                 return
             print("Namespace directory is created.")
-        elif (os.path.isfile("containers_db.json") == False):
+        if (os.path.isfile("containers_db.json") == False):
             print("Creating database...")
             with open('containers_db.json', 'w', encoding='utf-8') as db:
                 json.dump({}, db)
             print("Database created.")
-        elif (arg_num == 1 and sys.argv[1] == "list"):
+        
+        # commands {list, add, start, del}
+        if (arg_num == 1 and sys.argv[1] == "list"):
             with open('containers_db.json', 'r', encoding='utf-8') as db:
                 db_json = json.loads(db.read())
                 for id in db_json.keys():
