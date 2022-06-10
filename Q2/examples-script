@@ -1,0 +1,86 @@
+Script started on 2022-06-10 12:39:52+0430
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ ls
+CLI.py  create_root_fs.sh  examples-script  README.md  [0m[01;34mrootfs[0m  [01;31mrootfs.tar.gz[0m
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ # [K[Kp[Ksudo python3 CLI.py list
+[sudo] password for amirmehdijf: 
+Creating the containers directory...
+Containers directory is created.
+Creating the namespaces directory...
+Namespace directory is created.
+Creating database...
+Database created.
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ sudo python3 CLI.py [K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[K[Kls
+CLI.py  [0m[01;34mcontainers[0m  containers_db.json  create_root_fs.sh  examples-script  [01;34mnamespaces[0m  README.md  [01;34mrootfs[0m  [01;31mrootfs.tar.gz[0m
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ sudo python3 CLI.py add ls[Ksudo python3 CLI.py add my-cont-1
+New container ID added to database.
+Container successfully created with id: 99546370
+root@my-cont-1:/# # checking  the                ## che= cking the pix   pid namespace
+root@my-cont-1:/# ps aux   fax
+   PID TTY      STAT   TIME COMMAND
+     1 ?        S      0:00 bash
+     4 ?        R+     0:00 ps fax
+root@my-cont-1:/# ###     ### checking net namespace
+root@my-cont-1:/# op  ip addr
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+root@my-cont-1:/# ### cheking =    cking the mount namespace
+root@my-cont-1:/# mount  
+/dev/sda1 on /proc type ext4 (rw,relatime,errors=remount-ro)
+proc on /proc type proc (rw,relatime)
+root@my-cont-1:/# ####  chek cking the ust   st  ust    ts naes  mespace
+root@my-cont-1:/# hostname
+my-cont-1
+root@my-cont-1:/# exit
+exit
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ sduo [K[K[K[Kudo python3 [K[K[K[K[K[K[K[K[K[K[K[K[Kexitsudo python3 CLI.py add my-cont-2 10[4Pdel 82692264add my-cont-2 10[4Pdel 82692264add my-cont-2 1[3Pdel 82692264add my-cont-2 10
+[sudo] password for amirmehdijf: 
+New container ID added to database.
+Container successfully created with id: 88013473
+Running scope as unit: run-r1a2282b20930490c9ba08c871c0b9608.scope
+root@my-cont-2:/# EEE   ### running memot ry consuminf   g app until it is c killd ed
+root@my-cont-2:/# python        python3 
+Python 3.8.2 (default, Mar 13 2020, 10:14:16) 
+[GCC 9.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> while [K[K[K[K[K[Kx = []
+>>> while (True):
+...     x.append(1)
+... 
+Killed
+root@my-cont-2:/# This    exit
+exit
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ sudo python3 CLI.py list
+99546370  |  my-cont-1
+88013473  |  my-cont-2
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ 1``[K[K[Ksudo python3 CLI.py start 99546370[K0
+root@my-cont-1:/# ip addr
+1: lo: <LOOPBACK> mtu 65536 qdisc noop state DOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+root@my-cont-1:/# mo  ps -a       m ls  localhost         hostname
+my-cont-1
+root@my-cont-1:/# # e we are in the first container again    .
+root@my-cont-1:/# # eve   Les ts change the network   r       lo                    changing lo state
+root@my-cont-1:/# ip addr      link set lo up
+root@my-cont-1:/# ip link 
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+root@my-cont-1:/# exit  
+exit
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ sudo python3 CLI.py start 99546370
+root@my-cont-1:/# ip link
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+root@my-cont-1:/# # the lo state is still up! !
+root@my-cont-1:/# exit    exit
+exit
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ sud[K[K[Ksudo python3 CLI.py start 99546370\ 99546370\ 99546370\ 99546370[1P 99546370[1P 99546370[1P 99546370[1P 99546370[1P 99546370[1P 99546370[1P 99546370[1P 99546370d 99546370e 99546370l 99546370
+Container ID removed from database.
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ sudo [K[K[K[K[Ksudo pth[K[Kython [K3 CLI.py list
+88013473  |  my-cont-2
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ sudo python3 CLI.py listdel 99546370[K[K[K[K[K[K[K[K88013473
+Container ID removed from database.
+]0;amirmehdijf@ubuntu: ~/SDMN-HW2/Q2[01;32mamirmehdijf@ubuntu[00m:[01;34m~/SDMN-HW2/Q2[00m$ exit
+exit
+
+Script done on 2022-06-10 13:41:26+0430
+
