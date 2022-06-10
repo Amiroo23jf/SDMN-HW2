@@ -18,7 +18,7 @@ def CLI():
                 print("Creating the containers directory failed...")
                 return
             print("Containers directory is created.")
-        if (os.path.isdir("./namespaces") == False):
+        elif (os.path.isdir("./namespaces") == False):
             # The namespace directory stores the namespaces of the created containers
             print("Creating the namespaces directory...")
             try:
@@ -27,17 +27,17 @@ def CLI():
                 print("Creating the namespace directory failed...")
                 return
             print("Namespace directory is created.")
-        if (os.path.isfile("containers_db.json") == False):
+        elif (os.path.isfile("containers_db.json") == False):
             print("Creating database...")
             with open('containers_db.json', 'w', encoding='utf-8') as db:
                 json.dump({}, db)
             print("Database created.")
-        if (arg_num == 1 and sys.argv[1] == "list"):
+        elif (arg_num == 1 and sys.argv[1] == "list"):
             with open('containers_db.json', 'r', encoding='utf-8') as db:
                 db_json = json.loads(db.read())
                 for id in db_json.keys():
                     print(str(id) + "  |  " + str(db_json[id]))
-        if (sys.argv[1] == "add"):
+        elif (sys.argv[1] == "add"):
             # creating container's ID
             with open('containers_db.json', 'r', encoding='utf-8') as db:
                 db_json = json.loads(db.read())
@@ -59,7 +59,8 @@ def CLI():
             netns_path = "./namespaces/"+str(cont_id)+"/net"
             mntns_path = "./namespaces/"+str(cont_id)+"/mnt"
             utsns_path = "./namespaces/"+str(cont_id)+"/uts"
-            pidns_path = "./namespaces/"+str(cont_id)+"/pid"
+            usrns_path = "./namespaces/"+str(cont_id)+"/usr"
+            cwd_path = os.getcwd()
 
             os.system("cp -r rootfs " + cont_path)
 
@@ -74,7 +75,7 @@ def CLI():
             os.system("touch " + netns_path) # net namespace
             os.system("touch " + mntns_path) # mnt namespace
             os.system("touch " + utsns_path) # uts namespace
-            os.system("touch " + pidns_path) # pid namespace
+            os.system("touch " + usrns_path) # usr namespace
             
 
             # mounting /proc and making it private
@@ -87,30 +88,66 @@ def CLI():
 
             
             # creating the container and its namespaces
-            if (has_mem == False):
-                
-                # creating the container and changing the hostname
-                os.system('unshare -Urf --uts='+utsns_path+' --net='+netns_path + ' --mount='+mntns_path + ' --pid='+pidns_path +
-                ' --mount-proc='+cont_path+'/proc chroot '+cont_path+' hostname '+cont_hostname)
+            # creating the container and changing the hostname
+            os.system('unshare -pfr --user=' + usrns_path +' --uts='+utsns_path+' --net='+netns_path + ' --mount='+mntns_path +
+            ' hostname '+cont_hostname)
+            #+ ' && mount -t proc proc ' + cont_path + '/proc'
 
-                # unmounting namespaces
-                os.system('umount ' + ns_path+"/*")
+            print("Container successfully created with id: "+str(cont_id))
 
-                print("Container successfully created with id: "+str(cont_id))
-
+            if (has_mem):
                 # running bash
-                os.system('unshare -Urf --uts='+utsns_path+' --net='+netns_path + ' --mount='+mntns_path + ' --pid='+pidns_path +
-                ' --mount-proc='+cont_path+'/proc chroot '+cont_path+' /bin/bash')
+                os.system('systemd-run --scope -p MemoryLimit='+ cont_mem +'M nsenter --user=' + usrns_path +  ' --uts='+ utsns_path +' --net='+ netns_path + ' --mount='+ mntns_path + 
+                ' unshare -pf chroot ' + cwd_path + '/containers/' + str(cont_id) + ' bash -c "mount -t proc proc /proc && bash"')
 
-                # unmounting namespaces after exiting bash
-                os.system('umount ' + ns_path+"/*")
+            else:
+                # running bash
+                os.system('nsenter --user=' + usrns_path +  ' --uts='+ utsns_path +' --net='+ netns_path + ' --mount='+ mntns_path + 
+                ' unshare -pf chroot ' + cwd_path + '/containers/' + str(cont_id) + ' bash -c "mount -t proc proc /proc && bash"')
                 
+
+        elif (sys.argv[1] == "start"):
+            with open('containers_db.json', 'r', encoding='utf-8') as db:
+                db_json = json.loads(db.read())
             
+            if (arg_num == 1):
+                print("add requires at least 1 argument")
+                return 
+            elif (arg_num == 2):
+                cont_id = sys.argv[2]
+                has_mem = False
+            else:
+                cont_id = sys.argv[2]
+                cont_mem = sys.argv[3]
+                has_mem = True
+
+            if (cont_id not in db_json):
+                print("Container doesn't exist!")
+                return 
+            cont_hostname = db_json[cont_id]
+
+            cont_path = "./containers/" + str(cont_id)
+            ns_path = "./namespaces/" + str(cont_id)
+            netns_path = "./namespaces/"+str(cont_id)+"/net"
+            mntns_path = "./namespaces/"+str(cont_id)+"/mnt"
+            utsns_path = "./namespaces/"+str(cont_id)+"/uts"
+            usrns_path = "./namespaces/"+str(cont_id)+"/usr"
+            cwd_path = os.getcwd()
+
+            if (has_mem):
+                # running bash
+                os.system('systemd-run --scope -p MemoryLimit='+ cont_mem +'M nsenter --user=' + usrns_path +  ' --uts='+ utsns_path +' --net='+ netns_path + ' --mount='+ mntns_path + 
+                ' unshare -pf chroot ' + cwd_path + '/containers/' + str(cont_id) + ' bash -c "mount -t proc proc /proc && bash"')
+
+            else:
+                # running bash
+                os.system('nsenter --user=' + usrns_path +  ' --uts='+ utsns_path +' --net='+ netns_path + ' --mount='+ mntns_path + 
+                ' unshare -pf chroot ' + cwd_path + '/containers/' + str(cont_id) + ' bash -c "mount -t proc proc /proc && bash"')
             
 
             
 
-        if (sys.argv[1] == "del"):
+        elif (sys.argv[1] == "del"):
             # creating container's ID
             with open('containers_db.json', 'r', encoding='utf-8') as db:
                 db_json = json.loads(db.read())
@@ -128,9 +165,9 @@ def CLI():
                 if (os.path.isdir(cont_path)):
                     # unmounting /proc
                     os.system("umount " + cont_path + "/proc")
-
                     # unmounting namespaces dir
-                    os.system("umount ./namespaces/" + cont_id)
+                    os.system("umount ./namespaces/" + cont_id + "/*")
+                    os.system("umount ./namespaces/" + cont_id )
 
                     # deleting the filesystem and namespaces
                     os.system("rm -r " + cont_path)
@@ -142,6 +179,10 @@ def CLI():
                 with open('containers_db.json', 'w', encoding='utf-8') as db:
                     json.dump(db_json, db)
                     print("Container ID removed from database.")
+        
+
+        else: 
+            print("Unsupported Command!")
 
 
 
