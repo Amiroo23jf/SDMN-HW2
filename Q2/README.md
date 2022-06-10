@@ -30,10 +30,10 @@ After running the CLI for the first time using any command, the containers and n
 - **namespaces:** For the sake of persistency and in order to be able to continue using a container from its previous state after closing it, this directory saves the namespaces of each container in a different directory named the ID of each container.
 
 So now lets move on from the architecture and see how to actuallty use the CLI in order to create and use it properly. Overall, the CLI has 4 command:
-1. add <hostname> <*memory>: This command is for adding new containers, the memory argument can be ignored if you do not want any limitation.
-2. start <container ID> <*memory>: By using this command you can start an already added container using it's container ID.
-3. del <container ID>: Using this command, you can delete a container and everything file and directory related to it.
-4. list: this command lists the { <container ID> : <hostname> } pairs of all added containers (excluding deleted ones)
+1. `add <hostname> <*memory>`: This command is for adding new containers, the memory argument can be ignored if you do not want any limitation.
+2. `start <container-ID> <*memory>`: By using this command you can start an already added container using it's container ID.
+3. `del <container-ID>`: Using this command, you can delete a container and everything file and directory related to it.
+4. `list`: this command lists the `{ <container ID> : <hostname> }` pairs of all added containers (excluding deleted ones)
 
 In the next sections, each of these commands are explained in depth with an example.
 
