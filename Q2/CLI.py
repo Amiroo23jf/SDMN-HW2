@@ -55,7 +55,27 @@ def CLI():
             
             # copying the filesystem
             cont_path = "./containers/" + str(cont_id)
+            ns_path = "./namespaces/" + str(cont_id)
+            netns_path = "./namespaces/"+str(cont_id)+"/net"
+            mntns_path = "./namespaces/"+str(cont_id)+"/mnt"
+            utsns_path = "./namespaces/"+str(cont_id)+"/uts"
+            pidns_path = "./namespaces/"+str(cont_id)+"/pid"
+
             os.system("cp -r rootfs " + cont_path)
+
+            # creating namespaces dir and files
+            os.system("mkdir -p ./namespaces/"+str(cont_id))
+
+            ## mounting the whole namespace path and making it private in order to
+            ## make unshare able to mount the given mnt namespace
+            os.system("mount --bind " + ns_path + " " + ns_path)
+            os.system("mount --make-private " + ns_path)
+
+            os.system("touch " + netns_path) # net namespace
+            os.system("touch " + mntns_path) # mnt namespace
+            os.system("touch " + utsns_path) # uts namespace
+            os.system("touch " + pidns_path) # pid namespace
+            
 
             # mounting /proc and making it private
             os.system("mount --bind " + cont_path + "/proc " + cont_path + "/proc")
@@ -68,7 +88,25 @@ def CLI():
             
             # creating the container and its namespaces
             if (has_mem == False):
-                os.system('unshare -Umnpruf --mount-proc='+cont_path+'/proc chroot '+cont_path+' /bin/bash -c "hostname '+cont_path+'; /bin/bash')
+                
+                # creating the container and changing the hostname
+                os.system('unshare -Urf --uts='+utsns_path+' --net='+netns_path + ' --mount='+mntns_path + ' --pid='+pidns_path +
+                ' --mount-proc='+cont_path+'/proc chroot '+cont_path+' hostname '+cont_hostname)
+
+                # unmounting namespaces
+                os.system('umount ' + ns_path+"/*")
+
+                print("Container successfully created with id: "+str(cont_id))
+
+                # running bash
+                os.system('unshare -Urf --uts='+utsns_path+' --net='+netns_path + ' --mount='+mntns_path + ' --pid='+pidns_path +
+                ' --mount-proc='+cont_path+'/proc chroot '+cont_path+' /bin/bash')
+
+                # unmounting namespaces after exiting bash
+                os.system('umount ' + ns_path+"/*")
+                
+            
+            
 
             
 
@@ -85,13 +123,19 @@ def CLI():
                     print("The container with the given ID doesn't exist!")
                     return
                 cont_path = "./containers/" + cont_id
+                ns_path = "./namespaces/" + cont_id
 
                 if (os.path.isdir(cont_path)):
-                     # unmounting /proc
+                    # unmounting /proc
                     os.system("umount " + cont_path + "/proc")
 
-                    # deleting the filesystem
+                    # unmounting namespaces dir
+                    os.system("umount ./namespaces/" + cont_id)
+
+                    # deleting the filesystem and namespaces
                     os.system("rm -r " + cont_path)
+                    os.system("rm -r " + ns_path)
+
                 
                 # removing ID-Hostname pair from database
                 db_json.pop(cont_id)
