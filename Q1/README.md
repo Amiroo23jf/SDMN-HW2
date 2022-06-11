@@ -63,8 +63,8 @@ sudo ip route add 10.10.0.0/24 dev br2
 sudo ip route add 172.0.0.0/24 dev b1
 ```
 
-## What happens if the each bridge and the nodes connecting to it were in different VMs
-In this case, instead of 6 rules, 8 rules should be added. The 4 rules written in the new namespaces would be the same, but the 4 rules in the root namespaces of the VMs would change. We define the interfaces of VM1 and VM2 connected to the switch as `eth1` and `eth2` respectively. Then, the rules for VM1 would be as followed:
+## What happens if each bridge and the nodes connecting to it were in different VMs
+In this case, instead of 6 rules, 8 rules should be added. The 4 rules written in the new namespaces would be the same, but rules in the root namespaces of the VMs would change. We define the interfaces of VM1 and VM2 connected to the switch as `eth1` and `eth2` respectively. Then, the rules for VM1 would be as followed:
 ```
 sudo ip route add 10.10.0.0/24 dev eth1
 sudo ip route add 172.0.0.0/24 dev br1
