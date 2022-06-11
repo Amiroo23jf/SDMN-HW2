@@ -60,7 +60,7 @@ sudo ip netns exec node4 ip route add 172.0.0.0/24 dev veth-node4
 In addtion, for the rules which are written in the root namespace, we are simply forwarding the packet destined for each subnet to its equivalent bridge as shown below:
 ```
 sudo ip route add 10.10.0.0/24 dev br2
-sudo ip route add 172.0.0.0/24 dev b1
+sudo ip route add 172.0.0.0/24 dev br1
 ```
 
 ## What happens if each bridge and the nodes connecting to it were in different VMs
